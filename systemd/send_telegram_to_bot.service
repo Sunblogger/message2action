@@ -1,0 +1,17 @@
+[Unit]
+Description=Send messages to a Telegram bot which were created by message2action
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+
+# We should wait until all services of the operating system are ready:
+ExecStartPre=/bin/sleep 15
+ExecStart=/bin/bash /home/pi/message2action/telegram/send_telegram_to_bot.sh start
+
+#ExecStop=/bin/bash /home/pi/message2action/telegram/send_telegram_to_bot.sh stop
+ExecStop=/bin/echo stop > /tmp/sendmessagetobot.stop
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Get mails for proecessing with message2action
+
+[Service]
+Type=simple
+
+ExecStart=/usr/bin/fetchmail -v -a -f /home/pi/message2action/fetchmailrc
+
+[Install]
+WantedBy=multi-user.target

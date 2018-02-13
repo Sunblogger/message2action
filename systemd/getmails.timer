@@ -1,0 +1,11 @@
+[Unit]
+Description=Get mails for proecessing with message2action
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=getmails.service
+
+[Install]
+WantedBy=timers.target

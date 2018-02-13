@@ -1,0 +1,13 @@
+[Unit]
+Description=Send mails which were created by message2action
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+ExecStart=/bin/bash /home/pi/message2action/mail/sendmails.sh start
+
+ExecStop=/bin/echo stop > /tmp/sendmails.stop
+
+[Install]
+WantedBy=multi-user.target

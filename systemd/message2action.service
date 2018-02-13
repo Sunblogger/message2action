@@ -1,0 +1,16 @@
+[Unit]
+Description=message2action, in=telegram out=telegram log=yes
+
+[Service]
+User=pi
+Group=pi
+Type=simple
+WorkingDirectory=/home/pi/message2action
+#we start with processing incoming telegram and send back with telegram. We log to logfile but we do not display and we start in daemon-mode:
+ExecStart=/home/pi/message2action/message2action in=telegram out=telegram daemon=y log=y
+
+# in order to stop message2action we send a stopsignal
+ExecStop=/home/pi/message2action/message2action in=telegram stopsignal
+
+[Install]
+WantedBy=multi-user.target
