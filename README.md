@@ -3,5 +3,6 @@ The program processes messages like SMS, mails and Telegram messages and reacts 
 For further details see documentation message2action.pdf.
 
 Compiling & linking
-In order to comppile an link from source enter 
+In order to comppile an link from source enter
+
 gcc -g –Wall -Wextra -o message2action message2action.c -lpthread
