@@ -74,6 +74,10 @@
 #define CONFIG_FILE_PATH_OUTGOING_TELEGRAM_ERROR 21 // path for outgoing telegram is not valid
 #define CONFIG_FILE_PATH_PROCESSED_TELEGRAM_ERROR 22	// path for processed telegram is not valid
 #define CONFIG_FILE_GARBAGE_COLLECTION_ERROR 23		// value for number of days for garbage collection is not valid
+
+#define EXECUTE_COMMAND_NO_COMMAND_ERROR	1		// the command we should execute is not defined in ini-file (=empty)
+#define EXECUTE_COMMAND_SYSTEM_ERROR 		2		// the system-call of the command to be executed failed
+#define EXECUTE_COMMAND_WOL_ERROR			3		// the WOL-command could not be send out
  
 #define KEYBOARD_THREAD_ERROR 20					// the thread could not be started to listen to keyboard-hits 
 
@@ -116,7 +120,7 @@
 #define SETUP_HELP_TEXT_TOO_LONG 1	// the text for the help message is too long
 #define SETUP_CONFIG_TEXT_TOO_LONG 1	// the text for the config message is too long
 
-const char version_of_program[] = "message2action version 0.34\n";
+const char version_of_program[] = "message2action version 0.35\n";
 
 const char config_filename[] = "message2action.ini";
 
@@ -1450,90 +1454,259 @@ char tempchar[10];
 char tempstring[100];
 char online_result[100]; 
 
-int errorcode;		// returnvalue from a function called
+int errorcode = NOERROR;		// returnvalue from a function called
 
 	switch (commandnumber) {
-			case messsagecommand_00_count : if (system(messsagecommand_00) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);
-										} break;
-			case messsagecommand_01_count : if (system(messsagecommand_01) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);
-										} break;
-			case messsagecommand_02_count : if (system(messsagecommand_02) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);										
-										} break;
-			case messsagecommand_03_count : if (system(messsagecommand_03) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);										
-										} break;
-			case messsagecommand_04_count : if (system(messsagecommand_04) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);										
-										} break;
-			case messsagecommand_05_count : if (system(messsagecommand_05) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);										
-										} break;
-			case messsagecommand_06_count : if (system(messsagecommand_06) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);										
-										} break;
-			case messsagecommand_07_count : if (system(messsagecommand_07) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);										
-										} break;
-			case messsagecommand_08_count : if (system(messsagecommand_08) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);										
-										} break;
-			case messsagecommand_09_count : if (system(messsagecommand_09) != 0) { 
-											strcpy(logentry, "Error: Command ");
-											strcat(logentry, configparameters[commandnumber]);
-											strcat(logentry, " = ");
-											strcat(logentry, configvariables[commandnumber]);
-											strcat(logentry, " could not be executed!\n");
-											write_logfile(logentry, LOG_ERROR);
-										} break;
-
+			case messsagecommand_00_count : if (strlen(messsagecommand_00) != 0) {	
+												if (system(messsagecommand_00) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_01_count : if (strlen(messsagecommand_01) != 0) {	
+												if (system(messsagecommand_01) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_02_count : if (strlen(messsagecommand_02) != 0) {	
+												if (system(messsagecommand_02) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_03_count : if (strlen(messsagecommand_03) != 0) {	
+												if (system(messsagecommand_03) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_04_count : if (strlen(messsagecommand_04) != 0) {	
+												if (system(messsagecommand_04) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_05_count : if (strlen(messsagecommand_05) != 0) {	
+												if (system(messsagecommand_05) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_06_count : if (strlen(messsagecommand_06) != 0) {	
+												if (system(messsagecommand_06) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_07_count : if (strlen(messsagecommand_07) != 0) {	
+												if (system(messsagecommand_07) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+											
+			case messsagecommand_08_count : if (strlen(messsagecommand_08) != 0) {	
+												if (system(messsagecommand_08) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+																						
+			case messsagecommand_09_count : if (strlen(messsagecommand_09) != 0) {	
+												if (system(messsagecommand_09) == 0) { 	// we could execute the command
+													strcpy(logentry, "Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " was executed succesfully.\n");
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												} else { 	// we could not execute the command
+													strcpy(logentry, "Error: Command ");
+													strcat(logentry, configparameters[commandnumber]);
+													strcat(logentry, " could not be executed!\n");
+													write_logfile(logentry, LOG_ERROR);
+													errorcode = EXECUTE_COMMAND_SYSTEM_ERROR;
+													// we send result back to outputchanel:
+													create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+												}
+											} else {	// the command is empty
+												sprintf(logentry, "Error: Command %s to be executed is not specified in inifile!\n", configparameters[commandnumber]);
+												write_logfile(logentry, LOG_ERROR);
+												errorcode = EXECUTE_COMMAND_NO_COMMAND_ERROR;	
+												// we send result back to outputchanel:
+												create_message_to_send(logentry, sender_of_message, return_inbound_messagetype(), return_outbound_messagetype());	
+											}	
+											break;
+																						
 			case WOL_MAC_00_count: errorcode = 	sendWOL(WOL_MAC_00_hex);  
 									if (errorcode == NOERROR) {		// we could send out WOL-command, now we check if device is online or not:
 										if (check_online_status_waittime_long != 0) {
@@ -1751,7 +1924,7 @@ int errorcode;		// returnvalue from a function called
 
 	} // end of switch-loop
 	
-return NOERROR;	
+return errorcode;	
 } // end of function execute_command *****************************************************************
 
 
@@ -2505,6 +2678,7 @@ time_t garbage_collection_time;	// the time we have started with garbage collect
 										commandfoundflag = TRUE;
 										processingflag = FALSE;
 										write_logfile("Info: programm will be stopped now.\n", LOG_INFO);
+										create_message_to_send("Info: programm will be stopped now.\n", messagesender, return_inbound_messagetype(), return_outbound_messagetype());
 								    }	
 								 
 									if ( strstr(tempstring, reboot_pi_command) != 0) { // we found the parameter, we can stop for searching
@@ -2514,6 +2688,7 @@ time_t garbage_collection_time;	// the time we have started with garbage collect
 										processingflag = FALSE;
 										reboot_piflag = TRUE;
 										write_logfile("Info: computer will be rebooted now.\n", LOG_INFO);
+										create_message_to_send("Info: computer will be rebooted now.\n", messagesender, return_inbound_messagetype(), return_outbound_messagetype());
 										sync();
 										system("shutdown -r now");
 								    }
@@ -2525,6 +2700,7 @@ time_t garbage_collection_time;	// the time we have started with garbage collect
 										processingflag = FALSE;
 										shutdown_piflag = TRUE;
 										write_logfile("Info: computer will be shutdown now.\n", LOG_INFO);
+										create_message_to_send("Info: computer will be shutdownn now.\n", messagesender, return_inbound_messagetype(), return_outbound_messagetype());
 										sync();
 										system("shutdown -h now");
 								    }
