@@ -1,13 +1,12 @@
 [Unit]
 Description=Telegram Bot, receiving messages from a Telegram bot
+# we start only when we have network ready
+After=dhcpcd.service	
 
 [Service]
 User=pi
 Group=pi
 Type=simple
-
-# We should wait some seconds to get all operating-system related services ready: 
-ExecStartPre=/bin/sleep 15
 
 #we start with python skript for processing incoming Telegram messages:
 ExecStart=/usr/bin/python /home/pi/message2action/telegram/telegrambot.py
