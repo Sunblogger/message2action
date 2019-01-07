@@ -429,7 +429,7 @@ if ((logging_flag == LOGGING_TRUE) || ((message_flag == LOG_ERROR) || (message_f
 		// now we check if we have reached the maximum # of lines in the logfile
 		stat(file_logfile, &fileattributes);
 		if (fileattributes.st_size > max_size_logfile_long*1024) {  // file is to big, we have to divide it by 2:
-			fprintf(logfile, "%s : %s\n", date_time, "Info: Logfile was truncated due to limit of size.");  //we add to the logfile one new line
+			fprintf(logfile, "%s : %s\n", date_time, "Info: Logfile was truncated due to limit of size.\n");  //we add to the logfile one new line
 			rewind(logfile);
 			for (linecounter = 0;  fgets(logfileline, MAX_CHARS_PER_LINE_LOGFILE, logfile) != 0; linecounter++) ;
 			rewind(logfile);
@@ -569,7 +569,7 @@ if (configfilep != 0) { // opening of configfile was successfull
 			printf("Error: Filesize of configfile is too large: %ld bytes.\n", fileattributes.st_size);
 						
 			fclose(configfilep); // close file, it can not be processed
-			return CONFIGFILESIZEERROR;
+			return CONFIG_FILESIZE_ERROR;
 		} else { // file is small enough, we start to extract all config-parameters:
 		 	memset(configfileline, '\0', MAX_CHARS_PER_LINE_CONFIGFILE);
 				

@@ -1,5 +1,5 @@
 //************************************************************************************************************************************************************
-// Includefile for message2action and message2actiongui (m2agui), version : see variable version_of_program
+// Includefile for message2action and message2actiongui (m2agui), version : 0.37
 // by Fuseless-Project
 //
 // This includefile declares some constants which are used globaly like returncodes of functions and lenghts of variables
@@ -34,7 +34,7 @@
 // define a list of errorcodes which can be used in functions:
 #define NOERROR 0
 #define CONFIG_FILE_READ_ERROR 1    				// something wrong with reading the config-file
-#define CONFIGFILESIZEERROR 2    					// config-file is too large
+#define CONFIG_FILESIZE_ERROR 2    					// config-file is too large
 #define CONFIG_FILE_MAC_ERROR 3    					// MAC-adress in configfile is not valid for example 'ZE'
 #define CONFIG_FILE_MAX_LOGFILE_ERROR 4   			// value for maxsize of logfile is invalid
 #define CONFIG_FILE_WAIT_TIME_NEXT_MESSAGE_ERROR 5 	// value for wait-time for next message is
@@ -55,6 +55,8 @@
 #define CONFIG_FILE_PATH_OUTGOING_TELEGRAM_ERROR 21 // path for outgoing telegram is not valid
 #define CONFIG_FILE_PATH_PROCESSED_TELEGRAM_ERROR 22	// path for processed telegram is not valid
 #define CONFIG_FILE_GARBAGE_COLLECTION_ERROR 23		// value for number of days for garbage collection is not valid
+#define CONFIG_FILE_WRITE_ERROR 24					// config file could not be written with default values
+#define CONFIG_FILE_INITIALIZED_ERROR 25			// config file had to be initialized and was written with default values
 
 #define EXECUTE_COMMAND_NO_COMMAND_ERROR	1		// the command we should execute is not defined in ini-file (=empty)
 #define EXECUTE_COMMAND_SYSTEM_ERROR 		2		// the system-call of the command to be executed failed
@@ -99,5 +101,19 @@
 #define PING_PIPE_ERROR 3					// something wrong with the pipe
 #define SETUP_HELP_TEXT_TOO_LONG 1	// the text for the help message is too long
 #define SETUP_CONFIG_TEXT_TOO_LONG 1	// the text for the config message is too long
+
+#define MAX_CHARS_FOR_CELLPHONE 18			// maximum 18 chars for cell-phone-#
+#define MAX_CHARS_FOR_MAILADDRESS 50		// maximum 50 chars for mailadress
+#define MAX_CHARS_FOR_TELEGRAM_CHATID 12	// maximum 12 chars for chat-ID for Telegram
+#define MAX_CHARS_FOR_MAC_ADDRESS 19		// maximum 12 chars for MAC-address: 6 x 3 chars + \0
+#define MAX_CHARS_FOR_IP_ADDRESS_V4 16		// maximum 12 chars for IP V4 address: 3 x 4 + 3 + \0
+#define MAX_CHARS_FOR_HOSTNAME 50			// maximum 50 chars for hostname
+
+#define LOG_ERROR 0      	// do we have an error to log or do we have an information to log
+#define LOG_INFO 1			// we log an information only
+#define LOG_WARNING 2		// we log a warning
+#define LOGGING_FALSE 0  	// logging is  disabled
+#define LOGGING_TRUE 1		// logging is enabled
+
 
 #endif	// define MESSAGE2ACTION_H
