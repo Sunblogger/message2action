@@ -4,7 +4,7 @@ For further details see documentation message2action.pdf.
 
 ## Compiling & linking
 
-In order to comppile an link from source enter
+In order to comppile and link from source enter
 ```sh
 gcc -g –Wall -Wextra -o message2action message2action.c -lpthread
 ```
