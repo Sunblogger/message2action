@@ -42,7 +42,9 @@ Some of the files are derived from the C++ files found at [cpp_sources](https://
 ## Create the program
 Before the program can be created, these adjustments must be made and prerequisites must be met:\
 The above-mentioned repository [cpp_sources](https://github.com/Sunblogger/cpp_sources) must be downloaded from the user's home directory with\
-```git clone https://github.com/Sunblogger/cpp_sources```
+```git clone https://github.com/Sunblogger/cpp_sources```\
+This repository must be downloaded with\
+```git clone https://github.com/Sunblogger/message2action```
 
 To create the program, this must be entered: ```make```\
 The parameter ```clean``` can be used to delete all object files and thus force the creation of all binaries.
@@ -86,7 +88,9 @@ Manche der Dateien sind abgeleitet aus den C++-Dateien, die unter [cpp_sources](
 ## Erstellen des Programmes
 Bevor das Programm erstellt werden kann, müssen diese Anpassungen vorgenommen und Voraussetzungen erfüllt werden:\
 Das oben erwähnte Repository [cpp_sources](https://github.com/Sunblogger/cpp_sources) muss im Home-Verzeichnis des eigenen Users heruntergeladen werden mit\
-```git clone https://github.com/Sunblogger/cpp_sources```
+```git clone https://github.com/Sunblogger/cpp_sources```\
+Dieses Repository muss heruntergeladen werden:\
+```git clone https://github.com/Sunblogger/message2action```
 
 Um das Programm zu erstellen, muss dies eingegeben werden: ```make```\
 Mit dem Parameter ```clean``` können alle Objectdateien gelöscht werden und damit das Erstellen aller Binärdateien erzwungen werden.
