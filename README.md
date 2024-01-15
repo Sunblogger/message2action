@@ -1,5 +1,5 @@
 # message2action
-German version [below](#deutsche-version).\
+German version [below](#deutsche-version).
 ## What is message2action?
 The program processes incoming messages such as SMS, emails, Telegram chat messages and responds to the content in the messages. Occasionally, this is also called "server control".
 
