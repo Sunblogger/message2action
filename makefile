@@ -1,5 +1,5 @@
 # Makefile for message2action
-# Date: 02.04.2023
+# Date: 15.01.2024
 CXXFLAGS = -g -I$(HOME)/cpp_sources/inifile -I$(HOME)/cpp_sources/logfile -I$(HOME)/cpp_sources/stopfile -I$(HOME)/message2action -Wall -Wextra -std=c++20
 
 message2action:	message2action.cpp message2action.o $(HOME)/message2action/m2a_ini.o $(HOME)/cpp_sources/stopfile/stopfile.o $(HOME)/cpp_sources/logfile/logfile.o $(HOME)/cpp_sources/inifile/inifile.o $(HOME)/message2action/m2a_message.o	
@@ -21,4 +21,8 @@ inifile.o: $(HOME)/cpp_sources/inifile/inifile.cpp $(HOME)/cpp_sources/inifile/i
 	g++ $(CXXFLAGS) -c $(HOME)/cpp_sources/inifile/inifile.cpp -o $(HOME)/cpp_sources/inifile/inifile.o -lstdc++fs
 	
 clean:
-	/usr/bin/find $(HOME) -name '*.o' -delete
+	rm $(HOME)/message2action/*.o; \
+	rm $(HOME)/message2action/message2action; \
+	rm $(HOME)/cpp_sources/inifile/inifile.o; \
+	rm $(HOME)/cpp_sources/logfile/logfile.o;\
+	rm $(HOME)/cpp_sources/stopfile/stopfile.o
