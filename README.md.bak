@@ -36,7 +36,7 @@ The program is made up of several files, which are as follows:\
 ```m2a_message.cpp```: Class for processing messages (SMS, Mail, Telegram).\
 ```m2a_message.hpp```: Definition of the class for processing the messages (SMS, Mail, Telegram).\
 \
-Some of the files are derived from the C++ files found at [cpp_sources](https://github.com/Sunblogger/cpp_sources). These files are the base classes.\
+Some of the files are derived from the C++ files found at [cpp_sources](https://github.com/Sunblogger/cpp_sources). These files are the base classes.
 ```makefile```: The makefile to create the program.
 
 ## Create the program
@@ -82,8 +82,8 @@ Das Programm ist aus mehreren Dateien aufgebaut, diese lauten wie folgt:\
 ```m2a_message.cpp```: Klasse für das Verarbeiten der Nachrichten (SMS, Mail, Telegram).\
 ```m2a_message.hpp```: Definition der Klasse für das Verarbeiten der Nachrichten (SMS, Mail, Telegram).\
 \
-Manche der Dateien sind abgeleitet aus den C++-Dateien, die unter [cpp_sources](https://github.com/Sunblogger/cpp_sources) zu finden sind. Diese Dateien sind die Basisklassen.\
-```makefile```: Das Makefile zum Erstellen des Programmes.
+Manche der Dateien sind abgeleitet aus den C++-Dateien, die unter [cpp_sources](https://github.com/Sunblogger/cpp_sources) zu finden sind. Diese Dateien sind die Basisklassen.
+```makefile```: Das Makefile zum Erstellen des Programmes.\
 
 ## Erstellen des Programmes
 Bevor das Programm erstellt werden kann, müssen diese Anpassungen vorgenommen und Voraussetzungen erfüllt werden:\
