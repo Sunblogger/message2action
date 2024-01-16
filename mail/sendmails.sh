@@ -1,10 +1,10 @@
-# sendmails.sh : script for sending out all mails which were setup by message2action. Release 0.2 from 06.01.2018
+# sendmails.sh : script for sending out all mails which were setup by message2action. Release 0.4 from 23.12.2023
 #!/bin/bash
 commandlineparameter=$1
 stopfile=/tmp/sendmails.stop		# This is the file which will be created when this script is called with parameter "stop". The existence of the file is used as a signal to tell the script that it has to stop
 processingflag=1 			# 0 = false, we have to stop; 1 = true, we have to continue (this is default)
-pathtossmtp=/usr/sbin/ssmtp		# The path to the program ssmtp (is used to send mails out)
-pathtomails=/home/pi/mail/outgoing	# the path were the files are saved which were created by message2action; they contain the mailcontent. This path is specified in ini-file of message2action with parameter path_outgoing_mail
+pathtomsmtp=/usr/bin/msmtp		# The path to the program ssmtp (is used to send mails out)
+pathtomails=/home/marcus/mail/outgoing	# the path were the files are saved which were created by message2action; they contain the mailcontent. This path is specified in ini-file of message2action with parameter path_outgoing_mail
 
 #echo "Given parameter in commandline:" $commandlineparameter
 
@@ -41,9 +41,9 @@ then # we have to start processing.
 				then
 					completeline=$(grep To: $file) 
 					# echo $completeline
-					mailrecipient=${completeline:3}
+					mailrecipient=${completeline:3}	# here we have the mailaddress to which we want to send the mail
 					# echo $mailrecipient
-					$pathtossmtp -v $mailrecipient < $file	
+					$pathtomsmtp --tls=on --debug --from legacyhardware@t-online.de -t $mailrecipient < $file	
 					# echo We delete file $file.
 					rm -f $file
 				fi
